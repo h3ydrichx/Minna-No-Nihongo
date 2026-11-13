@@ -467,6 +467,7 @@
 
   <header>
     <button id="furiToggle" class="theme-toggle furi-toggle" title="Tampilkan/sembunyikan furigana" aria-label="Tampilkan atau sembunyikan furigana" aria-pressed="true">ふ</button>
+    <button id="romajiToggle" class="theme-toggle furi-toggle romaji-toggle" title="Tampilkan/sembunyikan romaji" aria-label="Tampilkan atau sembunyikan romaji" aria-pressed="true">Ab</button>
     <button id="themeToggle" class="theme-toggle" title="Ganti tema" aria-label="Ganti tema terang/gelap">🌙</button>
     <div class="title-jp">言葉の稽古</div>
     <div class="title-sub">Latihan kosakata · Minna no Nihongo I &amp; II</div>
@@ -731,6 +732,13 @@
     let v = null;
     try{ v = localStorage.getItem('mnn-furigana'); }catch(e){}
     if(v === 'off') document.documentElement.setAttribute('data-furigana','off');
+  })();
+
+  // --- Romaji tampil/sembunyi ---
+  (function initRomaji(){
+    let v = null;
+    try{ v = localStorage.getItem('mnn-romaji'); }catch(e){}
+    if(v === 'off') document.documentElement.setAttribute('data-romaji','off');
   })();
 
   // --- Tema terang/gelap ---
@@ -3193,7 +3201,7 @@
         <div class="card flippable" id="fcard">
           <div class="hanko" id="hanko">見た</div>
           <div class="jp">${jpHTML(base)}</div>
-          <div class="kana" id="fcRomaji" style="display:none">${escapeHtml(base.romaji)}</div>
+          <div class="kana romaji" id="fcRomaji" style="display:none">${escapeHtml(base.romaji)}</div>
           <div class="meaning" id="fcMeaning" style="display:none">${escapeHtml(q.meaning)}</div>
           <div class="flip-hint" id="fcHint">Ketuk kartu untuk melihat artinya</div>
         </div>
@@ -3224,7 +3232,7 @@
         <div class="card">
           <div class="hanko" id="hanko"></div>
           <div class="jp">${jpHTML(base)}</div>
-          <div class="kana">${escapeHtml(base.romaji)}</div>
+          <div class="kana romaji">${escapeHtml(base.romaji)}</div>
         </div>
         <div class="choices" id="choiceArea">
           ${options.map(o=>`<button class="choice-btn" data-id="${o.id}">${escapeHtml(o.meaning)}</button>`).join('')}
@@ -3322,7 +3330,7 @@
           <div class="card">
             <div class="hanko" id="hanko"></div>
             <div class="jp">${jpHTML(base)}</div>
-            <div class="kana">${escapeHtml(base.romaji)}</div>
+            <div class="kana romaji">${escapeHtml(base.romaji)}</div>
           </div>
           <div class="type-row">
             <input id="typeInput" placeholder="Ketik artinya (Bahasa Indonesia)…" autocomplete="off">
@@ -3618,6 +3626,22 @@
       syncFuri();
     };
     syncFuri();
+
+    const rb = $('#romajiToggle');
+    const syncRomaji = () => {
+      const off = document.documentElement.getAttribute('data-romaji') === 'off';
+      rb.classList.toggle('off', off);
+      rb.setAttribute('aria-pressed', off ? 'false' : 'true');
+      rb.title = off ? 'Romaji disembunyikan — ketuk untuk menampilkan' : 'Romaji ditampilkan — ketuk untuk menyembunyikan';
+    };
+    rb.onclick = () => {
+      const root = document.documentElement;
+      const off = root.getAttribute('data-romaji') === 'off';
+      if(off) root.removeAttribute('data-romaji'); else root.setAttribute('data-romaji','off');
+      try{ localStorage.setItem('mnn-romaji', off ? 'on' : 'off'); }catch(e){}
+      syncRomaji();
+    };
+    syncRomaji();
 
     // Awalnya tidak ada bab yang dipilih — pengguna memilih sendiri.
     belajarCfg.chapters = new Set();
