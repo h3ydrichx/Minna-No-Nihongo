@@ -1,6 +1,6 @@
 // Service worker: membuat aplikasi bisa dipakai tanpa internet.
 // Naikkan angka VERSI setiap kali Anda mengganti index.html agar pengguna mendapat versi baru.
-const VERSI = 'mnn-v6';
+const VERSI = 'mnn-v7';
 const INTI = [
   './',
   './index.html',
